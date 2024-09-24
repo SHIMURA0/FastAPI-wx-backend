@@ -1,0 +1,11 @@
+fastapi
+httpx
+pydantic
+pytest
+python-dotenv
+python_jose
+Requests
+SQLAlchemy
+uvicorn
+asyncmy
+cryptography
