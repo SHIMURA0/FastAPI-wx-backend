@@ -4,6 +4,7 @@
 # Date Created: YYYY-MM-DD
 # Last Modified: YYYY-MM-DD
 
+import uuid
 from sqlalchemy import (
     Column,
     Integer,
@@ -11,6 +12,7 @@ from sqlalchemy import (
     DateTime,
     JSON, ForeignKey
 )
+from sqlalchemy.future import select
 from sqlalchemy.sql import func
 from app.db.base import Base
 
@@ -37,10 +39,15 @@ class InstrumentUsageRecord(Base):
     __tablename__ = "INSTRUMENT_USAGE_RECORDS"
 
     # Primary key
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        autoincrement=True
+    )
     # Core information
     instrument_code = Column(String(255), ForeignKey("INSTRUMENTS.code"), nullable=False, comment="instrument code")
-    instrument = Column(String(255), ForeignKey("INSTRUMENTS.name"), nullable=False, comment="Name or identifier of the device")
+    instrument = Column(String(255), ForeignKey("INSTRUMENTS.name"), nullable=False,
+                        comment="Name or identifier of the device")
     instrument_status = Column(String(255), nullable=False, comment="Status of the instrument during device operation")
     operator_name = Column(
         String(255),
@@ -55,6 +62,18 @@ class InstrumentUsageRecord(Base):
     # Automatically managed timestamp fields (UTC datatime)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), comment="Timestamp of record creation")
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), comment="Timestamp of last record update")
+
+    @staticmethod
+    async def generate_id(session):
+        # 创建查询
+        stmt = select(func.max(InstrumentUsageRecord.id))  # 使用 record_id 替换 id
+
+        # 执行查询
+        result = await session.execute(stmt)
+
+        # 获取最大 ID
+        max_id = result.scalar()  # 获取标量值
+        return (max_id + 1) if max_id is not None else 1
 
     def __repr__(self):
         """

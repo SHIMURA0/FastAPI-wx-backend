@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from typing import List, Annotated
 from fastapi import Depends
 import logging
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from pydantic import ValidationError
 from app.models.WeChat.instrument_usage_records import InstrumentUsageRecord as InstrumentUsageRecordModel
 from app.schemas.WeChat.instruments import InstrumentUsageRecord as InstrumentRecordSchema
@@ -58,8 +58,10 @@ class InstrumentRecordRepository:
         """
         try:
             # Convert Pydantic model to ORM model
-            db_record = InstrumentUsageRecordModel(**instrument_record.model_dump())
-
+            new_id = await InstrumentUsageRecordModel.generate_id(self.db)
+            # db_record = InstrumentUsageRecordModel(**instrument_record.model_dump())
+            db_record = InstrumentUsageRecordModel(id=new_id,
+                                                   **instrument_record.model_dump())
             # Add the new record to the database session
             self.db.add(db_record)
 
@@ -72,6 +74,11 @@ class InstrumentRecordRepository:
 
             # Return the newly created record
             return db_record
+
+        except IntegrityError as e:
+            logger.error("Integrity error: %s", e)
+            await self.db.rollback()  # 回滚事务
+            raise e  # 重新抛出其他处理
 
         except ValidationError as ve:
             logger.error("Validation error: %s", ve)
