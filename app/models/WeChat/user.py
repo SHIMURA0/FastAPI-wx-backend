@@ -8,7 +8,6 @@ from sqlalchemy import (
     Column,
     Integer,
     String,
-    Index
 )
 from app.db.base import Base
 
@@ -28,10 +27,6 @@ class User(Base):
 
     __tablename__ = "USERS"
 
-    id = Column(Integer, primary_key=True, index=True, comment="User ID, primary key")
-    real_name = Column(String(255), nullable=True, comment="User's real name")
-    openid = Column(String(255), unique=True, comment="WeChat user's OpenID, unique")
-
-    __table_args__ = (
-        Index('idx_real_name', 'real_name'),
-    )
+    id: int = Column(Integer, primary_key=True, index=True, comment="User ID, primary key")
+    real_name: str = Column(String(255), nullable=True, comment="User's real name")
+    openid: str = Column(String(255), unique=True, comment="WeChat user's OpenID, unique")

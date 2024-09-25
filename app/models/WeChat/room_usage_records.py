@@ -5,7 +5,6 @@ from sqlalchemy import (
     DateTime,
     JSON,
     ForeignKey,
-    Index
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -32,7 +31,7 @@ class RoomUsageRecord(Base):
 
     __tablename__ = "ROOM_USAGE_RECORDS"
 
-    id = Column(
+    id: int = Column(
         Integer,
         primary_key=True,
         autoincrement=True,
@@ -40,26 +39,26 @@ class RoomUsageRecord(Base):
     )
 
     # Core information
-    room_id = Column(
+    room_id: int = Column(
         Integer,
         ForeignKey("ROOMS.id"),
         nullable=False,
         index=True,
         comment="Indicating the room id where operation is done"
     )
-    operator_name = Column(
+    operator_name: str = Column(
         String(255),
         ForeignKey("USERS.real_name"),
         nullable=False,
         index=True,
         comment="Name of the operator"
     )
-    room_status = Column(
+    room_status: str = Column(
         String(255),
         nullable=False,
         comment="Indicating whether entering or leaving a room"
     )
-    operator_type = Column(
+    operator_type: str = Column(
         String(255),
         nullable=False,
         index=True,
@@ -67,19 +66,19 @@ class RoomUsageRecord(Base):
     )
 
     # Additional details stored as JSON
-    details = Column(
+    details: dict = Column(
         JSON,
         nullable=False,
         comment="Detailed record of instruments used in the room"
     )
 
     # Automatically managed timestamp fields
-    created_at = Column(
+    created_at: DateTime = Column(
         DateTime(timezone=True),
         server_default=func.now(),
         comment="Timestamp of record creation"
     )
-    updated_at = Column(
+    updated_at: DateTime = Column(
         DateTime(timezone=True),
         onupdate=func.now(),
         comment="Timestamp of last record update"
