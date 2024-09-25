@@ -1,14 +1,30 @@
 # app/db/session.py
 
+"""
+This module provides an asynchronous database session management utility
+using SQLAlchemy for FastAPI applications.
+
+It creates an asynchronous session factory and defines a function to provide
+database sessions as dependencies within FastAPI route functions.
+
+The `get_async_db` function yields an SQLAlchemy `AsyncSession` for use
+in database operations, automatically managing the lifecycle of the
+database session.
+"""
+
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker
 )
 from typing import AsyncGenerator
 from .init_db import engine
+import logging
 
-# Create an asynchronous session factory
-# This factory creates new AsyncSession objects when called
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create an asynchronous session factory.
+# This factory creates new AsyncSession objects when called.
 AsyncSessionLocal: async_sessionmaker[AsyncSession] = async_sessionmaker(
     bind=engine,  # Bind the session to our async engine defined in init_db.py
     class_=AsyncSession,  # Specify that we want AsyncSession instances
@@ -28,7 +44,10 @@ async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
     Yields:
         AsyncSession: An asynchronous SQLAlchemy session.
 
-    Usage example in a FastAPI route:
+    Raises:
+        Exception: If an error occurs during database operations.
+
+    Example usage in a FastAPI route:
         @app.get("/items")
         async def read_items(db: AsyncSession = Depends(get_async_db)):
             # Use db for database operations
@@ -36,17 +55,20 @@ async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
             return items.scalars().all()
 
     Notes:
-    - This function uses a context manager to ensure proper session management.
-    - The yielded session is closed in the 'finally' block, ensuring cleanup even if an exception occurs.
-    - This pattern allows for efficient connection pooling and proper resource management.
+        This function uses a context manager to ensure proper session management.
+        The yielded session is closed in the 'finally' block, ensuring cleanup
+        even if an exception occurs.
+        This pattern allows for efficient connection pooling and proper resource management.
     """
     async with AsyncSessionLocal() as session:
+        logger.info("Database session opened")
         try:
             yield session
-            # At this point, the database operations in the route function have been completed
+        except Exception as e:
+            logger.error("Error during database session: %s", e)
+            raise
         finally:
-            # Ensure the session is closed after the request is processed
-            # This releases the connection back to the connection pool
+            logger.info("Database session closed")
             await session.close()
 
 # Additional notes:

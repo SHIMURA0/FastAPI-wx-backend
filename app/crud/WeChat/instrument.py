@@ -5,11 +5,14 @@ from sqlalchemy.future import select
 from typing import List, Annotated
 from fastapi import Depends
 import logging
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.exc import (
+    SQLAlchemyError,
+    IntegrityError
+)
 from pydantic import ValidationError
 from app.models.WeChat.instrument_usage_records import InstrumentUsageRecord as InstrumentUsageRecordModel
 from app.schemas.WeChat.instruments import InstrumentUsageRecord as InstrumentRecordSchema
-from app.api.dependencies.Wechat.db import get_async_db
+from app.api.dependencies.Wechat.db import get_db_dependency
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -58,10 +61,11 @@ class InstrumentRecordRepository:
         """
         try:
             # Convert Pydantic model to ORM model
-            new_id = await InstrumentUsageRecordModel.generate_id(self.db)
-            # db_record = InstrumentUsageRecordModel(**instrument_record.model_dump())
-            db_record = InstrumentUsageRecordModel(id=new_id,
-                                                   **instrument_record.model_dump())
+            new_id: int = await InstrumentUsageRecordModel.generate_id(self.db)
+            db_record = InstrumentUsageRecordModel(
+                id=new_id,
+                **instrument_record.model_dump()
+            )
             # Add the new record to the database session
             self.db.add(db_record)
 
@@ -106,16 +110,6 @@ class InstrumentRecordRepository:
         )
         return list(result.scalars().all())
 
-    # async def read_record_by_instrument(
-    #         self,
-    #         instrument_id: int
-    # ) -> InstrumentUsageRecordModel:
-    #     result = await self.db.execute(
-    #         select(InstrumentUsageRecordModel)
-    #         .filter(cast(BinaryExpression, InstrumentUsageRecordModel.instrument == instrument_id))
-    #     )
-    #     return result.scalars().first()
-
     # TODO: Implement update_record function
     #
     # This function should update a sequencing record in the database.
@@ -150,6 +144,6 @@ class InstrumentRecordRepository:
 
 # 可以创建一个便捷函数来获取 SequencingRecordRepository 实例
 async def get_instrument_record_repository(
-        db: Annotated[AsyncSession, Depends(get_async_db)]
+        db: Annotated[AsyncSession, Depends(get_db_dependency)]
 ) -> InstrumentRecordRepository:
     return InstrumentRecordRepository(db)
