@@ -13,7 +13,7 @@ class Room(Base):
 
     # Primary key
     id: int = Column(Integer, primary_key=True, index=True, comment="Indexing ID for each room")
-
+    room_id: str = Column(String(255), comment="Roman numerals")
     # Core information
     room_info: str = Column(String(255), comment="name and functionality of each room")
 

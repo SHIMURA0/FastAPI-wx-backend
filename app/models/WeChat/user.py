@@ -7,7 +7,7 @@
 from sqlalchemy import (
     Column,
     Integer,
-    String,
+    String
 )
 from app.db.base import Base
 
@@ -28,5 +28,5 @@ class User(Base):
     __tablename__ = "USERS"
 
     id: int = Column(Integer, primary_key=True, index=True, comment="User ID, primary key")
-    real_name: str = Column(String(255), nullable=True, comment="User's real name")
+    real_name: str = Column(String(255), nullable=True, unique=False, comment="User's real name")
     openid: str = Column(String(255), unique=True, comment="WeChat user's OpenID, unique")

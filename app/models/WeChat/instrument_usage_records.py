@@ -48,15 +48,12 @@ class InstrumentUsageRecord(Base):
     # Core information
     instrument_code: str = Column(
         String(255),
-        ForeignKey("INSTRUMENTS.code"),
         nullable=False,
         comment="instrument code"
     )
     instrument: str = Column(
         String(255),
-        ForeignKey("INSTRUMENTS.name"),
         nullable=False,
-        index=True,
         comment="Name or identifier of the device"
     )
     instrument_status: str = Column(
@@ -66,9 +63,7 @@ class InstrumentUsageRecord(Base):
     )
     operator_name: str = Column(
         String(255),
-        ForeignKey("USERS.real_name"),
         nullable=False,
-        index=True,
         comment="Name of the operator performing the device"
     )
 

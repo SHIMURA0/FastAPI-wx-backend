@@ -41,16 +41,12 @@ class RoomUsageRecord(Base):
     # Core information
     room_id: int = Column(
         Integer,
-        ForeignKey("ROOMS.id"),
         nullable=False,
-        index=True,
         comment="Indicating the room id where operation is done"
     )
     operator_name: str = Column(
         String(255),
-        ForeignKey("USERS.real_name"),
         nullable=False,
-        index=True,
         comment="Name of the operator"
     )
     room_status: str = Column(
@@ -58,10 +54,9 @@ class RoomUsageRecord(Base):
         nullable=False,
         comment="Indicating whether entering or leaving a room"
     )
-    operator_type: str = Column(
+    operation_type: str = Column(
         String(255),
         nullable=False,
-        index=True,
         comment="daily or extraction or CNAS"
     )
 
