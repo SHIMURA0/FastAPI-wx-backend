@@ -40,7 +40,6 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
-    Header
 )
 from typing import (
     Annotated,

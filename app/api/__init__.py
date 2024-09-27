@@ -1,15 +1,18 @@
-# app/api/__init__.py
+# /app/api/__init__.py
 
+# 导入 FastAPI 的一些核心组件（如果需要）
 from fastapi import APIRouter
-from .routers import v1_router
 
-# 创建一个主 API 路由器
-api_router = APIRouter()
+# 导入 routers 模块
+from .routers import router as api_router
 
-# 包含 v1 版本的路由
-api_router.include_router(v1_router, prefix="/v1")
+# 可以根据需要定义其他功能，比如 API 相关的配置、依赖等
 
-# 如果你有其他版本的 API，也可以在这里包含
-# 例如：
-# from .routers.v2 import router as v2_router
-# api_router.include_router(v2_router, prefix="/v2")
+# 类似于导入异常处理、事件处理等
+# from .core import my_core_function
+
+# 创建一个主 API 路由器（如果没有在 routers/__init__.py 中创建）
+# api_router = APIRouter()
+
+# 这里主要是对 API 进行组织，通常不需要在这个文件中定义路由
+

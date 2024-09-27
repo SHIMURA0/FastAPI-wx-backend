@@ -41,7 +41,10 @@ from fastapi import (
     APIRouter,
     HTTPException
 )
-from typing import Annotated, Dict
+from typing import (
+    Annotated,
+    Dict
+)
 from app.crud.WeChat.instrument import (
     InstrumentRecordRepository,
     get_instrument_record_repository

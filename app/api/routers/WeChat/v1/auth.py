@@ -38,7 +38,10 @@ Dependencies:
 This module is a crucial element of the FastAPI application, facilitating secure user login processes and maintaining session validity through effective token management.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import (
+    APIRouter,
+    HTTPException
+)
 from app.schemas.WeChat.auth import (
     LoginRequest,
     TokenResponse,

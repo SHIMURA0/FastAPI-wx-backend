@@ -39,7 +39,7 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # Include the API router for WeChat endpoints with a specified prefix.
-app.include_router(api_router, prefix="/api/v1/wechat")
+app.include_router(api_router, prefix="/api")
 
 
 @app.get("/")
