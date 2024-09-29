@@ -2,12 +2,10 @@ from pydantic import (
     BaseModel,
     Field
 )
-from datetime import datetime
 from typing import (
     Dict,
-    Any, Optional
+    Any,
 )
-from collections import OrderedDict
 
 
 class InstrumentUsageRecord(BaseModel):
@@ -30,4 +28,7 @@ class InstrumentUsageRecord(BaseModel):
         examples=["牛博"]
     )
 
-    details: Dict[str, Any]
+    details: Dict[str, Any] = Field(
+        ...,
+        description="仪器使用表单的详细记录"
+    )

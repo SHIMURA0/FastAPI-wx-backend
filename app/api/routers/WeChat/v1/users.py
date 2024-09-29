@@ -48,6 +48,7 @@ from typing import (
 from app.api.dependencies import get_current_user
 from app.core import verify_token
 from app.core.config import settings
+from app.schemas import MessageResponse
 from app.schemas.WeChat.user import NameUpdate as UserNameSchema
 from app.services.WeChat.users import (
     get_user_service,
@@ -102,16 +103,15 @@ async def get_user_info(
 oauth2_scheme = settings.OAUTH2_SCHEME
 
 
-@router.put("/update_user_name")
+@router.put("/update_user_name", response_model=MessageResponse)
 async def update_user_info(
         user_service: Annotated[UserService, Depends(get_user_service)],
         user_real_name: UserNameSchema,
         token: str = Depends(oauth2_scheme)
-        # authorization: str = Header(...),
 ) -> Dict[str, str]:
-    # token: str = authorization.split(" ")[1]
     payload: Dict[str, Any] = await verify_token(token, 'access')
     openid: str = payload.get("sub")
     real_name: str = user_real_name.real_name
     await user_service.update_user(openid, real_name)
+
     return {"message": "User's real name has been successfully recorded"}

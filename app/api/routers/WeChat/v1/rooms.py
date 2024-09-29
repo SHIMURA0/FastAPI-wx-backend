@@ -46,6 +46,8 @@ from typing import (
     Dict,
     Annotated
 )
+
+from app.schemas import MessageResponse
 from app.schemas.WeChat.room import RoomUsageRecord as RoomUsageRecordSchema
 from app.crud.WeChat.room import (
     RoomRecordRepository,
@@ -55,7 +57,7 @@ from app.crud.WeChat.room import (
 router = APIRouter()
 
 
-@router.post("/submit_room_record")
+@router.post("/submit_room_record", response_model=MessageResponse)
 async def create_room_usage_record(
         new_room_record: RoomUsageRecordSchema,
         room_repo: Annotated[RoomRecordRepository, Depends(get_room_record_repository)]

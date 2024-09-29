@@ -12,7 +12,8 @@ class Room(Base):
     __tablename__ = 'ROOMS'
 
     # Primary key
-    id: int = Column(Integer, primary_key=True, index=True, comment="Indexing ID for each room")
+    id: int = Column(Integer, primary_key=True,
+                     index=True, comment="Numerical indexing ID for each room")
     room_id: str = Column(String(255), comment="Roman numerals")
     # Core information
     room_info: str = Column(String(255), comment="name and functionality of each room")

@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from typing import Literal
 
 
 class LoginRequest(BaseModel):
@@ -21,7 +20,7 @@ class RefreshTokenRequest(BaseModel):
         examples=["refresh_token_abcdef123456"]
     )
 
-#
+
 class TokenResponse(BaseModel):
     access_token: str = Field(
         ...,
@@ -38,12 +37,6 @@ class TokenResponse(BaseModel):
         examples=[
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"]
     )
-
-    # token_type: Literal["bearer"] = Field(
-    #     "bearer",
-    #     description="令牌类型，通常为 'bearer'",
-    #     examples=["bearer"]
-    # )
 
     class Config:
         schema_extra = {
