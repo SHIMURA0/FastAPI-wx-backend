@@ -62,9 +62,16 @@ class InstrumentRecordRepository:
         try:
             # Convert Pydantic model to ORM model
             new_id: int = await InstrumentUsageRecordModel.generate_id(self.db)
+            details_json_string: str = await InstrumentUsageRecordModel.convert_details_to_json_string(
+                instrument_record.details
+            )
             db_record = InstrumentUsageRecordModel(
                 id=new_id,
-                **instrument_record.model_dump()
+                instrument_code=instrument_record.instrument_code,
+                instrument=instrument_record.instrument,
+                instrument_status=instrument_record.instrument_status,
+                operator_name=instrument_record.operator_name,
+                details=details_json_string,
             )
             # Add the new record to the database session
             self.db.add(db_record)

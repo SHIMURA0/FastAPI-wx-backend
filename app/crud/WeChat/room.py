@@ -15,7 +15,10 @@ from typing import Annotated
 from fastapi import Depends
 from app.schemas.WeChat.room import RoomUsageRecord as RoomUsageRecordSchema
 from app.models.WeChat.room_usage_records import RoomUsageRecord as RoomUsageRecordModel
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.exc import (
+    SQLAlchemyError,
+    IntegrityError
+)
 from pydantic import ValidationError
 import logging
 from app.api.dependencies.Wechat.db import get_db_dependency
@@ -36,7 +39,10 @@ class RoomRecordRepository:
         """
         self.db: AsyncSession = db
 
-    async def create_record(self, room_record: RoomUsageRecordSchema) -> RoomUsageRecordModel:
+    async def create_record(
+            self,
+            room_record: RoomUsageRecordSchema
+    ) -> RoomUsageRecordModel:
         """
         Create a new room usage record in the database.
 
@@ -60,9 +66,14 @@ class RoomRecordRepository:
         try:
             # Convert Pydantic model to ORM model
             new_id: int = await RoomUsageRecordModel.generate_id(self.db)
+            details_json_string: str = await RoomUsageRecordModel.convert_details_to_json_string(room_record.details)
             db_record: RoomUsageRecordModel = RoomUsageRecordModel(
                 id=new_id,
-                **room_record.model_dump()
+                room_id=room_record.room_id,
+                operator_name=room_record.operator_name,
+                room_status=room_record.room_status,
+                operation_type=room_record.operation_type,
+                details=details_json_string
             )
             # Add the new record to the database session
             self.db.add(db_record)

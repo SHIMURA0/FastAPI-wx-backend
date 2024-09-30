@@ -5,12 +5,13 @@
 # Last Modified: YYYY-MM-DD
 
 
+import json
 from sqlalchemy import (
     Column,
     Integer,
     String,
     DateTime,
-    JSON, ForeignKey
+    Text
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -68,8 +69,8 @@ class InstrumentUsageRecord(Base):
     )
 
     # Additional details stored as JSON
-    details: dict = Column(
-        JSON,
+    details: str = Column(
+        Text,
         nullable=False,
         comment="Additional device operation details in JSON format"
     )
@@ -110,6 +111,21 @@ class InstrumentUsageRecord(Base):
         # get the maximum id in the table INSTRUMENT_USAGE_RECORDS up to now
         max_id: int = result.scalar()
         return (max_id + 1) if max_id is not None else 1
+
+    @staticmethod
+    async def convert_details_to_json_string(
+            details_dict: dict
+    ) -> str:
+        """Convert a details dictionary to a JSON string.
+
+        Args:
+            details_dict (dict): The dictionary containing details.
+
+        Returns:
+            str: A JSON string representation of the details dictionary.
+        """
+        # Convert details_dict to JSON string
+        return json.dumps(details_dict)
 
     def __repr__(self) -> str:
         """Provide a string representation of the InstrumentUsageRecord instance.

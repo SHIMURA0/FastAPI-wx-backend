@@ -1,15 +1,17 @@
+import json
+
 from sqlalchemy import (
     Column,
     Integer,
     String,
     DateTime,
-    JSON,
     Text,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.sql import func
 from app.db.base import Base
+import json
 
 
 class RoomUsageRecord(Base):
@@ -61,7 +63,7 @@ class RoomUsageRecord(Base):
     )
 
     # Additional details stored as JSON
-    details: dict = Column(
+    details: str = Column(
         Text,
         nullable=False,
         comment="Detailed record of instruments used in the room"
@@ -103,6 +105,21 @@ class RoomUsageRecord(Base):
         # get the maximum id in the table INSTRUMENT_USAGE_RECORDS up to now
         max_id = result.scalar()
         return (max_id + 1) if max_id is not None else 1
+
+    @staticmethod
+    async def convert_details_to_json_string(
+            details_dict: dict
+    ) -> str:
+        """Convert a details dictionary to a JSON string.
+
+        Args:
+            details_dict (dict): The dictionary containing details.
+
+        Returns:
+            str: A JSON string representation of the details dictionary.
+        """
+        # Convert details_dict to JSON string
+        return json.dumps(details_dict)
 
     def __repr__(self):
         return (f"<RoomUsageRecord(id={self.id},"
