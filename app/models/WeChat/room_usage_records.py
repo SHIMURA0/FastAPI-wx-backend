@@ -4,7 +4,7 @@ from sqlalchemy import (
     String,
     DateTime,
     JSON,
-    ForeignKey,
+    Text,
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -62,7 +62,7 @@ class RoomUsageRecord(Base):
 
     # Additional details stored as JSON
     details: dict = Column(
-        JSON,
+        Text,
         nullable=False,
         comment="Detailed record of instruments used in the room"
     )
