@@ -122,7 +122,7 @@ class InstrumentUsageRecord(Base):
             details_dict (dict): The dictionary containing details.
 
         Returns:
-            str: A JSON string representation of the details dictionary.
+            str: A JSON string representation of the details' dictionary.
         """
         # Convert details_dict to JSON string
         return json.dumps(details_dict)

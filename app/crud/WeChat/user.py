@@ -55,7 +55,9 @@ class UserRepository:
             user: UserInfo
     ) -> User:
         """创建新用户。接受一个UserCreate Pydantic模型，将其转换为User ORM模型，添加到数据库，提交更改，刷新对象（获取数据库生成的ID），然后返回。"""
+        new_id: int = await User.generate_id(self.db)
         db_user: User = User(
+            id=new_id,
             real_name=user.real_name,
             openid=user.openid,
         )
