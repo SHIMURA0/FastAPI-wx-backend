@@ -1,4 +1,4 @@
-# First FastAPI backend project
+# FastAPI Backend for WeChat MiniProgram
 
 this project starts at 2024-08-26
 
